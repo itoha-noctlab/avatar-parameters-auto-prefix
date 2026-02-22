@@ -1,0 +1,27 @@
+{
+  "name": "AKATSUKIYA.AvatarParametersAutoPrefix.Editor",
+  "rootNamespace": "AKATSUKIYA.AvatarParametersAutoPrefix.Editor",
+  "references": [
+    "AKATSUKIYA.AvatarParametersAutoPrefix",
+    "nadena.dev.modular-avatar.core",
+    "nadena.dev.ndmf",
+    "VRC.SDK3A"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [
+    {
+      "name": "com.vrchat.avatars",
+      "expression": "",
+      "define": "AKATSUKIYA_VRCSDK3_AVATARS"
+    }
+  ],
+  "noEngineReferences": false
+}
