@@ -91,6 +91,48 @@ namespace AKATSUKIYA.AvatarParametersAutoPrefix.Editor
                 zh: "取消"
             );
 
+            public static readonly LocalizedString DestructiveApplyUndoLabel = new(
+                en: "Apply Avatar Parameters Auto Prefix (Destructive)",
+                ja: "Avatar Parameters Auto Prefix を破壊的適用",
+                ko: "Avatar Parameters Auto Prefix 파괴적 적용",
+                zh: "破坏性应用 Avatar Parameters Auto Prefix"
+            );
+
+            public static readonly LocalizedString DestructiveApplyReportDialogTitle = new(
+                en: "Avatar Parameters Auto Prefix",
+                ja: "Avatar Parameters Auto Prefix",
+                ko: "Avatar Parameters Auto Prefix",
+                zh: "Avatar Parameters Auto Prefix"
+            );
+
+            public static readonly LocalizedString DestructiveApplyReportHeader = new(
+                en: "Destructive apply is completed. The following assets have been duplicated:",
+                ja: "破壊的適用が完了し、以下のアセットが複製されました。:",
+                ko: "파괴적 적용이 완료되었으며, 다음 에셋이 복제되었습니다.:",
+                zh: "破坏性应用已完成，以下资产已被复制。:"
+            );
+
+            public static readonly LocalizedString DestructiveApplyReportAnimatorControllers = new(
+                en: "Animator Controllers:",
+                ja: "Animator Controller:",
+                ko: "Animator Controller:",
+                zh: "Animator Controller:"
+            );
+
+            public static readonly LocalizedString DestructiveApplyReportAnimationClips = new(
+                en: "Animation Clips:",
+                ja: "Animation Clip:",
+                ko: "Animation Clip:",
+                zh: "Animation Clip:"
+            );
+
+            public static readonly LocalizedString Ok = new(
+                en: "OK",
+                ja: "OK",
+                ko: "확인",
+                zh: "确定"
+            );
+
         }
 
         public static class Message
@@ -114,6 +156,104 @@ namespace AKATSUKIYA.AvatarParametersAutoPrefix.Editor
                 ja: "prefixName が空欄のため、破壊的適用を中止しました。",
                 ko: "prefixName이 비어 있어 파괴적 적용을 중단했습니다.",
                 zh: "由于 prefixName 为空，已取消破坏性应用。"
+            );
+
+            public static readonly LocalizedString DuplicationTargetPathInvalid = new(
+                en: "Target path is invalid for {0}: {1}",
+                ja: "{0} の出力先パスが不正です: {1}",
+                ko: "{0}의 대상 경로가 잘못되었습니다: {1}",
+                zh: "{0} 的目标路径无效: {1}"
+            );
+
+            public static readonly LocalizedString DuplicationTargetPathConflict = new(
+                en: "Duplicate target {0} path detected: {1}",
+                ja: "{0} の出力先パスが重複しています: {1}",
+                ko: "{0} 대상 경로가 중복되었습니다: {1}",
+                zh: "检测到重复的 {0} 目标路径: {1}"
+            );
+
+            public static readonly LocalizedString DuplicationTargetAlreadyExists = new(
+                en: "Target {0} already exists: {1}",
+                ja: "出力先に {0} が既に存在します: {1}",
+                ko: "대상 {0}이(가) 이미 존재합니다: {1}",
+                zh: "目标 {0} 已存在: {1}"
+            );
+
+            public static readonly LocalizedString AssetTypeAnimatorController = new(
+                en: "AnimatorController",
+                ja: "AnimatorController",
+                ko: "AnimatorController",
+                zh: "AnimatorController"
+            );
+
+            public static readonly LocalizedString AssetTypeAnimationClip = new(
+                en: "AnimationClip",
+                ja: "AnimationClip",
+                ko: "AnimationClip",
+                zh: "AnimationClip"
+            );
+
+            public static readonly LocalizedString AnimatorControllerAssetPathInvalid = new(
+                en: "AnimatorController asset path is invalid: {0}",
+                ja: "AnimatorController のアセットパスが不正です: {0}",
+                ko: "AnimatorController 에셋 경로가 잘못되었습니다: {0}",
+                zh: "AnimatorController 资源路径无效: {0}"
+            );
+
+            public static readonly LocalizedString AnimatorControllerDirectoryPathInvalid = new(
+                en: "AnimatorController directory path is invalid: {0}",
+                ja: "AnimatorController のディレクトリパスが不正です: {0}",
+                ko: "AnimatorController 디렉터리 경로가 잘못되었습니다: {0}",
+                zh: "AnimatorController 目录路径无效: {0}"
+            );
+
+            public static readonly LocalizedString FailedToDuplicateAnimatorController = new(
+                en: "Failed to duplicate AnimatorController: {0} -> {1}",
+                ja: "AnimatorController の複製に失敗しました: {0} -> {1}",
+                ko: "AnimatorController 복제에 실패했습니다: {0} -> {1}",
+                zh: "复制 AnimatorController 失败: {0} -> {1}"
+            );
+
+            public static readonly LocalizedString FailedToLoadDuplicatedAnimatorController = new(
+                en: "Failed to load duplicated AnimatorController: {0}",
+                ja: "複製された AnimatorController の読み込みに失敗しました: {0}",
+                ko: "복제된 AnimatorController 로드에 실패했습니다: {0}",
+                zh: "加载复制后的 AnimatorController 失败: {0}"
+            );
+
+            public static readonly LocalizedString DuplicatedControllerTypeInvalid = new(
+                en: "Duplicated controller is not AnimatorController: {0}",
+                ja: "複製されたコントローラーが AnimatorController ではありません: {0}",
+                ko: "복제된 컨트롤러가 AnimatorController가 아닙니다: {0}",
+                zh: "复制后的控制器不是 AnimatorController: {0}"
+            );
+
+            public static readonly LocalizedString AnimationClipAssetPathInvalid = new(
+                en: "AnimationClip asset path is invalid: {0}",
+                ja: "AnimationClip のアセットパスが不正です: {0}",
+                ko: "AnimationClip 에셋 경로가 잘못되었습니다: {0}",
+                zh: "AnimationClip 资源路径无效: {0}"
+            );
+
+            public static readonly LocalizedString AnimationClipDirectoryPathInvalid = new(
+                en: "AnimationClip directory path is invalid: {0}",
+                ja: "AnimationClip のディレクトリパスが不正です: {0}",
+                ko: "AnimationClip 디렉터리 경로가 잘못되었습니다: {0}",
+                zh: "AnimationClip 目录路径无效: {0}"
+            );
+
+            public static readonly LocalizedString FailedToInstantiateAnimationClip = new(
+                en: "Failed to instantiate AnimationClip: {0}",
+                ja: "AnimationClip の生成に失敗しました: {0}",
+                ko: "AnimationClip 인스턴스 생성에 실패했습니다: {0}",
+                zh: "实例化 AnimationClip 失败: {0}"
+            );
+
+            public static readonly LocalizedString FailedToLoadDuplicatedAnimationClip = new(
+                en: "Failed to load duplicated AnimationClip: {0}",
+                ja: "複製された AnimationClip の読み込みに失敗しました: {0}",
+                ko: "복제된 AnimationClip 로드에 실패했습니다: {0}",
+                zh: "加载复制后的 AnimationClip 失败: {0}"
             );
         }
     }
