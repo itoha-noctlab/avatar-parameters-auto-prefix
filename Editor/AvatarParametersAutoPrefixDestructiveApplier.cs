@@ -12,6 +12,17 @@ using UnityEngine;
 
 namespace AKATSUKIYA.AvatarParametersAutoPrefix.Editor
 {
+    public sealed class DestructiveApplyResult
+    {
+        public IReadOnlyList<string> DuplicatedControllerPaths => _duplicatedControllerPaths;
+        public IReadOnlyList<string> DuplicatedClipPaths => _duplicatedClipPaths;
+
+        internal readonly List<string> _duplicatedControllerPaths = new();
+        internal readonly List<string> _duplicatedClipPaths = new();
+
+        public bool HasAnyDuplication => _duplicatedControllerPaths.Count > 0 || _duplicatedClipPaths.Count > 0;
+    }
+
     public static class AvatarParametersAutoPrefixDestructiveApplier
     {
         private sealed class DuplicationReport
@@ -89,6 +100,81 @@ namespace AKATSUKIYA.AvatarParametersAutoPrefix.Editor
             return true;
         }
 
+        public static bool ApplyDestructive(
+            AvatarParametersAutoPrefix component,
+            bool showConfirmationDialog,
+            bool showDuplicationReport,
+            out DestructiveApplyResult result
+        )
+        {
+            result = null;
+
+            if (component == null)
+            {
+                return false;
+            }
+
+            var prefix = component.prefixName?.Trim() ?? string.Empty;
+            if (string.IsNullOrEmpty(prefix))
+            {
+                Debug.LogWarning(Localized.Message.DestructiveApplyIgnoredEmptyPrefix, component);
+                return false;
+            }
+
+            if (AutoPrefixProcessor.TryGetValidationError(component.transform, prefix, out var validationError))
+            {
+                Debug.LogError(validationError, component);
+                return false;
+            }
+
+            if (!ValidateNoDuplicationConflicts(component.transform, prefix, component))
+            {
+                return false;
+            }
+
+            if (showConfirmationDialog)
+            {
+                var accepted = EditorUtility.DisplayDialog(
+                    Localized.UI.DestructiveApplyDialogTitle,
+                    Localized.UI.DestructiveApplyDialogMessage,
+                    Localized.UI.DestructiveApplyDialogOk,
+                    Localized.UI.DestructiveApplyDialogCancel
+                );
+                if (!accepted)
+                {
+                    return false;
+                }
+            }
+
+            if (!DuplicateAnimatorControllers(component.transform, prefix, out var duplicationReport))
+            {
+                return false;
+            }
+
+            var ownerGameObject = component.gameObject;
+            var ownerScene = ownerGameObject.scene;
+
+            AutoPrefixProcessor.ApplyUnder(component.transform, prefix, false, null);
+            UnityEngine.Object.DestroyImmediate(component);
+
+            EditorUtility.SetDirty(ownerGameObject);
+            if (ownerScene.IsValid())
+            {
+                EditorSceneManager.MarkSceneDirty(ownerScene);
+            }
+
+            result = new DestructiveApplyResult();
+            result._duplicatedControllerPaths.AddRange(duplicationReport.DuplicatedControllerPaths);
+            result._duplicatedClipPaths.AddRange(duplicationReport.DuplicatedClipPaths);
+
+            if (showDuplicationReport && duplicationReport.HasAnyDuplication)
+            {
+                ShowDuplicationReport(duplicationReport, ownerGameObject);
+            }
+
+            return true;
+        }
+
         public static bool ApplyDestructiveFromScript(
             this AvatarParametersAutoPrefix component,
             bool showConfirmationDialog = true
@@ -106,7 +192,6 @@ namespace AKATSUKIYA.AvatarParametersAutoPrefix.Editor
                 return true;
             }
 
-            // 同じアセットを参照する MergeAnimator が複数ある場合でも複製は1回にする。
             var duplicatedBySource = new Dictionary<RuntimeAnimatorController, RuntimeAnimatorController>();
             var duplicatedClipBySource = new Dictionary<AnimationClip, AnimationClip>();
             var hasCopiedAnyAsset = false;
