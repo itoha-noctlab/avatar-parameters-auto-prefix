@@ -10,10 +10,10 @@
 
 ## 【支持语言 / Supported Languages】
 
-- [ja (日本語)](https://noctlab.com/avatar-parameters-auto-prefix/ja)
-- [en (English)](https://noctlab.com/avatar-parameters-auto-prefix/en)
-- [ko (한국어)](https://noctlab.com/avatar-parameters-auto-prefix/ko)
-- [zh (简体中文)](https://noctlab.com/avatar-parameters-auto-prefix/zh)
+- [ja (日本語)](https://noctlab.com/docs/avatar-parameters-auto-prefix/ja)
+- [en (English)](https://noctlab.com/docs/avatar-parameters-auto-prefix/en)
+- [ko (한국어)](https://noctlab.com/docs/avatar-parameters-auto-prefix/ko)
+- [zh (简体中文)](https://noctlab.com/docs/avatar-parameters-auto-prefix/zh)
 
 ## 【规格】
 
