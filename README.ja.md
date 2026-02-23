@@ -38,10 +38,10 @@
 
 - `ModularAvatarParameters` に含まれるパラメータ名
 - `ModularAvatarMergeAnimator` に設定されている `AnimatorController`
-- `AnimatorController.parameters` に設定されているパラメータ名
-- `VRCAvatarParameterDriver` の `parameters[].name`
-- `VRCAnimatorPlayAudio` の `parameter`
-- `AnimatorState` の遷移条件で使用されているパラメータ名
+    - `AnimatorController.parameters` に設定されているパラメータ名
+    - `VRCAvatarParameterDriver` の `parameters[].name`
+    - `VRCAnimatorPlayAudio` の `parameter`
+    - `AnimatorState` の遷移条件で使用されているパラメータ名
     - `BlendTree` 内で使用されているパラメータ名
 - `VRCPhysBone.parameter` とその派生パラメータ（`_IsGrabbed`, `_IsPosed`, `_Angle`, `_Stretch`, `_Squish`）
 - `VRCContactReceiver` に設定されている `parameter`

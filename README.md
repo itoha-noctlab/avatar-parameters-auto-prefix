@@ -38,11 +38,11 @@ The following names are converted to `prefixName + originalName`.
 
 - Parameter names in `ModularAvatarParameters`
 - `AnimatorController` assigned to `ModularAvatarMergeAnimator`
-- Parameter names in `AnimatorController.parameters`
-- `parameters[].name` in `VRCAvatarParameterDriver`
-- `parameter` in `VRCAnimatorPlayAudio`
-- Parameter names used in `AnimatorState` transition conditions
-- Parameter names used inside `BlendTree`
+    - Parameter names in `AnimatorController.parameters`
+    - `parameters[].name` in `VRCAvatarParameterDriver`
+    - `parameter` in `VRCAnimatorPlayAudio`
+    - Parameter names used in `AnimatorState` transition conditions
+    - Parameter names used inside `BlendTree`
 - `VRCPhysBone.parameter` and derived parameters (`_IsGrabbed`, `_IsPosed`, `_Angle`, `_Stretch`, `_Squish`)
 - `parameter` configured in `VRCContactReceiver`
 - `collisionTags` in `VRCContactSender` / `VRCContactReceiver`

@@ -38,11 +38,11 @@
 
 - `ModularAvatarParameters` 에 포함된 파라미터 이름
 - `ModularAvatarMergeAnimator` 에 설정된 `AnimatorController`
-- `AnimatorController.parameters` 의 파라미터 이름
-- `VRCAvatarParameterDriver` 의 `parameters[].name`
-- `VRCAnimatorPlayAudio` 의 `parameter`
-- `AnimatorState` 전이 조건에서 사용되는 파라미터 이름
-- `BlendTree` 내부에서 사용되는 파라미터 이름
+    - `AnimatorController.parameters` 의 파라미터 이름
+    - `VRCAvatarParameterDriver` 의 `parameters[].name`
+    - `VRCAnimatorPlayAudio` 의 `parameter`
+    - `AnimatorState` 전이 조건에서 사용되는 파라미터 이름
+    - `BlendTree` 내부에서 사용되는 파라미터 이름
 - `VRCPhysBone.parameter` 및 파생 파라미터(`_IsGrabbed`, `_IsPosed`, `_Angle`, `_Stretch`, `_Squish`)
 - `VRCContactReceiver` 에 설정된 `parameter`
 - `VRCContactSender` / `VRCContactReceiver` 의 `collisionTags`

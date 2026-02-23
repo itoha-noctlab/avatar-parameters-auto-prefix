@@ -38,11 +38,11 @@
 
 - `ModularAvatarParameters` 中的参数名
 - `ModularAvatarMergeAnimator` 上设置的 `AnimatorController`
-- `AnimatorController.parameters` 中的参数名
-- `VRCAvatarParameterDriver` 的 `parameters[].name`
-- `VRCAnimatorPlayAudio` 的 `parameter`
-- `AnimatorState` 过渡条件中使用的参数名
-- `BlendTree` 内部使用的参数名
+    - `AnimatorController.parameters` 中的参数名
+    - `VRCAvatarParameterDriver` 的 `parameters[].name`
+    - `VRCAnimatorPlayAudio` 的 `parameter`
+    - `AnimatorState` 过渡条件中使用的参数名
+    - `BlendTree` 内部使用的参数名
 - `VRCPhysBone.parameter` 及其派生参数（`_IsGrabbed`, `_IsPosed`, `_Angle`, `_Stretch`, `_Squish`）
 - `VRCContactReceiver` 中设置的 `parameter`
 - `VRCContactSender` / `VRCContactReceiver` 的 `collisionTags`
