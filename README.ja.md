@@ -6,7 +6,7 @@
 
 - VRChatアバーターのビルド時に、パラメータ名に指定した`prefixName`を**非破壊**で自動付与するツールです。
 - 同じギミックを1アバター内に複数配置したり、ギミック同士で競合する名称のパラメータがある場合などに、パラメータ名の衝突を回避するために利用できます。
-- VPM package として公開しています。VCC で `https://vpm.noctlab.com/vpm.json` を追加することで導入できます。
+- VPMパッケージとして公開しています。VCCで`https://vpm.noctlab.com/vpm.json`を追加して導入できます。
 
 ## 【対応言語 / Supported Languages】
 
@@ -20,7 +20,7 @@
 - Modular Avatar を前提とします。
 - 処理タイミングは build-time です。
 - 非破壊のためコンポーネントを外すことで導入前の状態に戻せます。
-- VRChat標準パラメータ名（例: `GestureLeft`, `GestureRight`, `IsLocal`...）は変更しません。
+- VRChat標準パラメータ名（例: `GestureLeft`、`GestureRight`、`IsLocal`など）は変更しません。
 
 ## 【必須依存】
 
@@ -29,7 +29,7 @@
 
 ## 【使用方法】
 
-1. パラメータ名を変更したいアバターギミックのルート階層に `Avatar Parameters Auto Prefix` コンポーネントを追加し `prefixName` を設定します。
+1. パラメータ名を変更したいアバターギミックのルート階層に `Avatar Parameters Auto Prefix` コンポーネントを追加し、`prefixName`を設定します。
 2. 通常どおりアバターをビルドします。
 
 ## 【機能詳細】
@@ -146,6 +146,7 @@
 ## 【破壊的適用】
 
 - コンポーネントの右クリックメニューから `[DANGER] Apply Destructive` を選択すると、上記の名称変更を元アセットに直接書き込むことができます。
+- リネーム処理前に、変更対象の `AnimatorController` と `AnimationClip` は `prefixName` を付与して複製されます。
 - 適用後は元に戻せないため、必ず事前にバックアップを取ってください。
 
 ## 【ライセンス】

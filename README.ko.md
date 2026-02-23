@@ -6,7 +6,7 @@
 
 - 이 도구는 VRChat 아바타 빌드 시 파라미터 이름에 `prefixName`을 비파괴 방식으로 자동 접두합니다.
 - 하나의 아바타에 같은 기믹을 여러 개 배치하거나, 여러 기믹 간 파라미터 이름이 충돌할 때 이름 충돌을 피하는 데 유용합니다.
-- VPM 패키지로 배포됩니다. VCC에 `https://vpm.noctlab.com/vpm.json` 을 추가하여 설치할 수 있습니다。
+- VPM 패키지로 배포됩니다. VCC에 `https://vpm.noctlab.com/vpm.json`을 추가하여 설치할 수 있습니다.
 
 ## 【지원 언어 / Supported Languages】
 
@@ -146,6 +146,7 @@
 ## 【파괴적 적용】
 
 - 컴포넌트 컨텍스트 메뉴에서 `[DANGER] Apply Destructive` 를 선택하면, 위와 같은 이름 변경을 원본 에셋에 직접 기록합니다.
+- 리네임 처리 전에, 변경 대상인 `AnimatorController` 와 `AnimationClip` 은 `prefixName`을 붙여 복제됩니다.
 - 이 작업은 되돌릴 수 없습니다. 반드시 미리 백업해 주세요.
 
 ## 【라이선스】

@@ -146,6 +146,7 @@ The following CollisionTags (built-in tags) are never renamed.
 ## 【Destructive Apply】
 
 - From the component context menu, choose `[DANGER] Apply Destructive` to write the same rename results directly into original assets.
+- Before applying, target `AnimatorController` and `AnimationClip` assets are duplicated with `prefixName` appended, and controller references are remapped to the duplicates.
 - This operation cannot be undone. Always make a backup beforehand.
 
 ## 【License】

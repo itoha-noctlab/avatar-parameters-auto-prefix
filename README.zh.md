@@ -146,6 +146,7 @@
 ## 【破坏性应用】
 
 - 在组件右键菜单中选择 `[DANGER] Apply Destructive`，可将上述重命名结果直接写入原始资源。
+- 在应用重命名前，变更对象的 `AnimatorController` 与 `AnimationClip` 会被复制，名称会添加 `prefixName`。
 - 应用后无法撤销，请务必提前备份。
 
 ## 【许可证】
