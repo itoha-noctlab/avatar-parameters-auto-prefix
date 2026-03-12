@@ -25,6 +25,8 @@ namespace AKATSUKIYA.AvatarParametersAutoPrefix.Editor
 
     public static class AvatarParametersAutoPrefixDestructiveApplier
     {
+        private const string AutoPrefixRuntimeSuffix = "__AutoPrefixRuntime";
+
         private sealed class DuplicationReport
         {
             public readonly List<string> DuplicatedControllerPaths = new();
@@ -84,6 +86,11 @@ namespace AKATSUKIYA.AvatarParametersAutoPrefix.Editor
             var ownerScene = ownerGameObject.scene;
 
             AutoPrefixProcessor.ApplyUnder(component.transform, prefix, false, null);
+            if (!FinalizeDuplicatedAnimatorAssets(component.transform))
+            {
+                return false;
+            }
+
             UnityEngine.Object.DestroyImmediate(component);
 
             EditorUtility.SetDirty(ownerGameObject);
@@ -155,6 +162,11 @@ namespace AKATSUKIYA.AvatarParametersAutoPrefix.Editor
             var ownerScene = ownerGameObject.scene;
 
             AutoPrefixProcessor.ApplyUnder(component.transform, prefix, false, null);
+            if (!FinalizeDuplicatedAnimatorAssets(component.transform))
+            {
+                return false;
+            }
+
             UnityEngine.Object.DestroyImmediate(component);
 
             EditorUtility.SetDirty(ownerGameObject);
@@ -232,6 +244,197 @@ namespace AKATSUKIYA.AvatarParametersAutoPrefix.Editor
             }
 
             return true;
+        }
+
+        private static bool FinalizeDuplicatedAnimatorAssets(Transform root)
+        {
+            if (root == null)
+            {
+                return true;
+            }
+
+            var processedControllers = new HashSet<AnimatorController>();
+            foreach (var mergeAnimator in root.GetComponentsInChildren<ModularAvatarMergeAnimator>(true))
+            {
+                if (mergeAnimator?.animator is not AnimatorController controller)
+                {
+                    continue;
+                }
+
+                if (!processedControllers.Add(controller))
+                {
+                    continue;
+                }
+
+                if (!FinalizeControllerBlendTrees(controller))
+                {
+                    return false;
+                }
+            }
+
+            AssetDatabase.SaveAssets();
+            return true;
+        }
+
+        private static bool FinalizeControllerBlendTrees(AnimatorController controller)
+        {
+            if (controller == null)
+            {
+                return true;
+            }
+
+            var controllerPath = AssetDatabase.GetAssetPath(controller);
+            if (string.IsNullOrEmpty(controllerPath))
+            {
+                return true;
+            }
+
+            var embeddedBySource = new Dictionary<BlendTree, BlendTree>();
+            var changed = false;
+
+            foreach (var layer in controller.layers)
+            {
+                changed |= FinalizeStateMachineBlendTrees(layer.stateMachine, controller, controllerPath, embeddedBySource);
+            }
+
+            if (changed)
+            {
+                EditorUtility.SetDirty(controller);
+            }
+
+            return true;
+        }
+
+        private static bool FinalizeStateMachineBlendTrees(
+            AnimatorStateMachine stateMachine,
+            AnimatorController controller,
+            string controllerPath,
+            Dictionary<BlendTree, BlendTree> embeddedBySource
+        )
+        {
+            if (stateMachine == null)
+            {
+                return false;
+            }
+
+            var changed = false;
+            var states = stateMachine.states;
+            for (var i = 0; i < states.Length; i++)
+            {
+                var state = states[i].state;
+                if (state == null)
+                {
+                    continue;
+                }
+
+                var finalizedMotion = FinalizeMotionBlendTrees(state.motion, controller, controllerPath, embeddedBySource, out var stateChanged);
+                if (!ReferenceEquals(state.motion, finalizedMotion))
+                {
+                    state.motion = finalizedMotion;
+                    stateChanged = true;
+                }
+
+                changed |= stateChanged;
+            }
+
+            foreach (var childStateMachine in stateMachine.stateMachines)
+            {
+                changed |= FinalizeStateMachineBlendTrees(childStateMachine.stateMachine, controller, controllerPath, embeddedBySource);
+            }
+
+            return changed;
+        }
+
+        private static Motion FinalizeMotionBlendTrees(
+            Motion motion,
+            AnimatorController controller,
+            string controllerPath,
+            Dictionary<BlendTree, BlendTree> embeddedBySource,
+            out bool changed
+        )
+        {
+            changed = false;
+
+            if (motion is not BlendTree sourceBlendTree)
+            {
+                return motion;
+            }
+
+            if (embeddedBySource.TryGetValue(sourceBlendTree, out var existingBlendTree))
+            {
+                changed = !ReferenceEquals(sourceBlendTree, existingBlendTree);
+                return existingBlendTree;
+            }
+
+            var blendTreePath = AssetDatabase.GetAssetPath(sourceBlendTree);
+            var shouldEmbed = !EditorUtility.IsPersistent(sourceBlendTree)
+                || !string.Equals(blendTreePath, controllerPath, StringComparison.OrdinalIgnoreCase);
+
+            var targetBlendTree = sourceBlendTree;
+            if (shouldEmbed)
+            {
+                targetBlendTree = CreateEmbeddedBlendTreeCopy(sourceBlendTree, controller);
+                changed = true;
+            }
+            else
+            {
+                var normalizedName = NormalizeBlendTreeName(sourceBlendTree.name);
+                if (!string.Equals(sourceBlendTree.name, normalizedName, StringComparison.Ordinal))
+                {
+                    sourceBlendTree.name = normalizedName;
+                    EditorUtility.SetDirty(sourceBlendTree);
+                    changed = true;
+                }
+            }
+
+            embeddedBySource[sourceBlendTree] = targetBlendTree;
+
+            var children = targetBlendTree.children;
+            var childReferencesChanged = false;
+            for (var i = 0; i < children.Length; i++)
+            {
+                var finalizedChildMotion = FinalizeMotionBlendTrees(children[i].motion, controller, controllerPath, embeddedBySource, out var childChanged);
+                if (!ReferenceEquals(children[i].motion, finalizedChildMotion))
+                {
+                    var child = children[i];
+                    child.motion = finalizedChildMotion;
+                    children[i] = child;
+                    childReferencesChanged = true;
+                }
+
+                changed |= childChanged;
+            }
+
+            if (childReferencesChanged)
+            {
+                targetBlendTree.children = children;
+                EditorUtility.SetDirty(targetBlendTree);
+                changed = true;
+            }
+
+            return targetBlendTree;
+        }
+
+        private static BlendTree CreateEmbeddedBlendTreeCopy(BlendTree sourceBlendTree, AnimatorController controller)
+        {
+            var embeddedBlendTree = new BlendTree();
+            AssetDatabase.AddObjectToAsset(embeddedBlendTree, controller);
+            EditorUtility.CopySerialized(sourceBlendTree, embeddedBlendTree);
+            embeddedBlendTree.name = NormalizeBlendTreeName(sourceBlendTree.name);
+            EditorUtility.SetDirty(embeddedBlendTree);
+            return embeddedBlendTree;
+        }
+
+        private static string NormalizeBlendTreeName(string name)
+        {
+            var normalized = string.IsNullOrWhiteSpace(name) ? "Blend Tree" : name;
+
+            while (normalized.EndsWith(AutoPrefixRuntimeSuffix, StringComparison.Ordinal))
+            {
+                normalized = normalized.Substring(0, normalized.Length - AutoPrefixRuntimeSuffix.Length);
+            }
+
+            return string.IsNullOrWhiteSpace(normalized) ? "Blend Tree" : normalized;
         }
 
         private static bool ValidateNoDuplicationConflicts(Transform root, string prefix, UnityEngine.Object contextObject)
@@ -468,6 +671,11 @@ namespace AKATSUKIYA.AvatarParametersAutoPrefix.Editor
                 return true;
             }
 
+            if (!FinalizeControllerBlendTrees(controller))
+            {
+                return false;
+            }
+
             foreach (var sourceClip in controller.animationClips)
             {
                 if (sourceClip == null)
@@ -519,11 +727,14 @@ namespace AKATSUKIYA.AvatarParametersAutoPrefix.Editor
                 var serializedObject = new SerializedObject(asset);
                 var property = serializedObject.GetIterator();
                 var changed = false;
-                var enterChildren = true;
 
-                while (property.NextVisible(enterChildren))
+                if (!property.Next(true))
                 {
-                    enterChildren = false;
+                    continue;
+                }
+
+                do
+                {
                     if (property.propertyType != SerializedPropertyType.ObjectReference)
                     {
                         continue;
@@ -547,6 +758,7 @@ namespace AKATSUKIYA.AvatarParametersAutoPrefix.Editor
                     property.objectReferenceValue = duplicatedClip;
                     changed = true;
                 }
+                while (property.Next(true));
 
                 if (!changed)
                 {

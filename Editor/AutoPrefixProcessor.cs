@@ -854,7 +854,7 @@ namespace AKATSUKIYA.AvatarParametersAutoPrefix.Editor
             // BlendTree may point to an external asset. Clone it before mutation to keep processing non-destructive.
             if (EditorUtility.IsPersistent(blendTree))
             {
-                var cloned = Object.Instantiate(blendTree);
+                var cloned = CloneBlendTreeForRuntime(blendTree);
                 cloned.name = blendTree.name + "__AutoPrefixRuntime";
                 blendTree = cloned;
             }
@@ -873,6 +873,13 @@ namespace AKATSUKIYA.AvatarParametersAutoPrefix.Editor
 
             blendTree.children = children;
             return blendTree;
+        }
+
+        private static BlendTree CloneBlendTreeForRuntime(BlendTree source)
+        {
+            var clone = new BlendTree();
+            EditorUtility.CopySerialized(source, clone);
+            return clone;
         }
 
         private static void ProcessTransition(AnimatorTransitionBase transition, Dictionary<string, string> remap)
